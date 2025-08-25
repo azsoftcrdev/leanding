@@ -3,7 +3,7 @@ import React from "react";
 const LandingPage: React.FC = () => {
 
 
- const API_BASE = import.meta.env.VITE_API_BASE ?? "api.emercadocr.com";
+ const API_BASE = "https://api.emercadocr.com";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
