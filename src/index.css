@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Animaciones personalizadas ===== */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.8s ease-in-out forwards;
+  }
+  .animate-fadeInDelay {
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ===== Sombras personalizadas ===== */
+@layer utilities {
+  .shadow-card {
+    box-shadow: 0 8px 24px rgba(33, 150, 243, 0.08); /* Azul eMercado */
+  }
+  .shadow-card-hover:hover {
+    box-shadow: 0 12px 28px rgba(33, 150, 243, 0.15);
+    transform: translateY(-4px);
+    transition: all 0.3s ease;
+  }
+}
