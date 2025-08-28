@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 const LandingPage: React.FC = () => {
-
-
- const API_BASE = "https://api.emercadocr.com";
+  const API_BASE = "https://api.emercadocr.com";
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -11,20 +10,15 @@ const LandingPage: React.FC = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // Objeto legible (solo para validar y loguear)
     const data: Record<string, string> = {};
     formData.forEach((v, k) => (data[k] = v.toString().trim()));
 
-    // Validaciones mínimas
     if (!data.nombre) return alert("Por favor ingresa tu nombre.");
     if (!data.correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.correo))
       return alert("Por favor ingresa un correo válido.");
     if (!data.mensaje) return alert("Por favor ingresa un mensaje.");
 
-    console.log("Datos del formulario:", data);
-
     try {
-      // IMPORTANTE: no pongas Content-Type aquí; el navegador lo arma con boundary
       const resp = await fetch(`${API_BASE}/api/contactos/crear`, {
         method: "POST",
         body: formData,
@@ -36,17 +30,16 @@ const LandingPage: React.FC = () => {
       }
 
       alert("Formulario enviado correctamente ✅");
-      form.reset(); // limpia el formulario
+      form.reset();
+      setIsModalOpen(false); // Cierra el modal al enviar
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Ocurrió un error al enviar el formulario");
     }
-
-
-
-    console.log("Datos del formulario:", data);
-    alert("Formulario enviado correctamente ✅");
   };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="bg-gradient-to-b from-[#E3F2FD] via-white to-[#F5F5F5] min-h-screen flex flex-col font-sans">
@@ -56,7 +49,6 @@ const LandingPage: React.FC = () => {
         <div className="text-[#2196F3] font-extrabold text-2xl">eMercado</div>
         <nav className="hidden md:flex space-x-8 text-[#424242] font-medium">
           <a href="#modules" className="hover:text-[#1565C0] transition-colors">Modulos</a>
-          <a href="#pricing" className="hover:text-[#1565C0] transition-colors">Precios</a>
           <a href="#contact" className="hover:text-[#1565C0] transition-colors">Contacto</a>
         </nav>
       </header>
@@ -70,14 +62,14 @@ const LandingPage: React.FC = () => {
           <p className="text-lg text-[#616161] max-w-lg">
             Administra ventas, pedidos, inventario, facturación electrónica y mucho más desde una interfaz intuitiva y centralizada.
           </p>
-          <button className="bg-[#FF5722] hover:bg-[#FF8A65] text-white font-semibold px-8 py-4 rounded-2xl shadow-lg transition-transform transform hover:scale-105">
+          <button onClick={openModal} className="bg-[#FF5722] hover:bg-[#FF8A65] text-white font-semibold px-8 py-4 rounded-2xl shadow-lg transition-transform transform hover:scale-105">
             Comenzá hoy
           </button>
         </div>
         <div className="flex-1 relative flex justify-center animate-fadeInDelay">
           <div className="absolute -top-12 -left-12 w-72 h-72 bg-[#BBDEFB] rounded-full blur-3xl opacity-40"></div>
           <div className="absolute bottom-0 right-0 w-72 h-72 bg-[#FFCCBC] rounded-full blur-3xl opacity-30"></div>
-          <img src="/logotipo.svg" alt="Logo eMercado" className="relative w-80 drop-shadow-2xl" />
+          <img src="/logotipo.svg" alt="Logo eMercado" className="relative w-48 md:w-80 drop-shadow-2xl" />
         </div>
       </section>
 
@@ -117,85 +109,8 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-    {/* Pricing */}
-    <section id="pricing" className="py-20 px-8 lg:px-16 text-center bg-white">
-      <h2 className="text-3xl font-bold text-[#424242] mb-12">Planes y Precios</h2>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-        
-        {/* Plan Emprende */}
-        <div className="bg-[#F5F5F5] rounded-2xl p-6 shadow-card shadow-card-hover border border-[#0D47A1]">
-          <h3 className="text-2xl font-bold text-[#2196F3]">Plan Emprende</h3>
-          <p className="text-3xl font-extrabold text-[#424242] my-4">₡0 / mes</p>
-          <ul className="text-[#616161] list-disc list-inside space-y-1 text-left">
-            <li>Comisión Ecommerce: 5% por venta</li>
-            <li>Facturación electrónica: 30 facturas/mes, luego ₡20 c/u</li>
-            <li>Usuarios: 1</li>
-            <li>Inventario básico: hasta 100 productos</li>
-            <li>Pedidos activo siempre</li>
-            <li>Ecommerce básico: catálogo, carrito, envío básico</li>
-            <li>Reportes básicos: ventas y pedidos</li>
-            <li>Soporte: Email</li>
-          </ul>
-        </div>
-
-        {/* Plan Negocio */}
-        <div className="bg-[#64B5F6] rounded-2xl p-6 shadow-card shadow-card-hover border-2 border-[#0D47A1] relative text-white">
-          <span className="absolute top-0 right-0 bg-[#0D47A1] text-white text-xs px-3 py-1 rounded-bl-lg">
-            Más Popular
-          </span>
-          <h3 className="text-2xl font-bold">Plan Negocio</h3>
-          <p className="text-3xl font-extrabold my-4">₡9,900 / mes</p>
-          <ul className="list-disc list-inside space-y-1 text-left">
-            <li>Comisión Ecommerce: 3% por venta</li>
-            <li>Facturación electrónica: Ilimitada (₡15 c/u si excede 1,000 docs)</li>
-            <li>Usuarios: 1</li>
-            <li>Inventario avanzado: productos ilimitados, alertas de stock</li>
-            <li>Pedidos con estados y seguimiento</li>
-            <li>Ecommerce estándar: catálogo, carrito, pagos (Tarjeta y Sinpe)</li>
-            <li>Reportes avanzados: ventas, gastos, impuestos</li>
-            <li>Soporte: Email y WhatsApp (24h)</li>
-          </ul>
-        </div>
-
-        {/* Plan Pro */}
-        <div className="bg-[#F5F5F5] rounded-2xl p-6 shadow-card shadow-card-hover border border-[#0D47A1]">
-          <h3 className="text-2xl font-bold text-[#2196F3]">Plan Pro – Crecimiento</h3>
-          <p className="text-3xl font-extrabold text-[#424242] my-4">₡19,900 / mes</p>
-          <ul className="text-[#616161] list-disc list-inside space-y-1 text-left">
-            <li>Comisión Ecommerce: 1.5% por venta</li>
-            <li>Facturación electrónica: Ilimitada</li>
-            <li>Usuarios: hasta 2</li>
-            <li>Inventario avanzado: multi-bodega, multi-sucursal</li>
-            <li>Pedidos multicanal: tienda, ecommerce, POS</li>
-            <li>Ecommerce avanzado: pagos múltiples, dominio propio</li>
-            <li>Analítica avanzada: dashboard, tendencias, KPIs</li>
-            <li>Reportes personalizados por fecha y sucursal</li>
-            <li>Soporte prioritario: Email y WhatsApp (12h)</li>
-          </ul>
-        </div>
-
-        {/* Plan Empresa */}
-        <div className="bg-[#F5F5F5] rounded-2xl p-6 shadow-card shadow-card-hover border border-[#0D47A1]">
-          <h3 className="text-2xl font-bold text-[#2196F3]">Plan Empresa – Escala</h3>
-          <p className="text-3xl font-extrabold text-[#424242] my-4">₡39,900 / mes</p>
-          <ul className="text-[#616161] list-disc list-inside space-y-1 text-left">
-            <li>Comisión Ecommerce: 0.5% por venta</li>
-            <li>Facturación electrónica: Ilimitada</li>
-            <li>Usuarios: 3</li>
-            <li>Inventario empresarial: multi-bodega, multi-sucursal</li>
-            <li>Pedidos multicanal: tienda, ecommerce, POS</li>
-            <li>Ecommerce premium: pasarelas múltiples, dominio y diseño personalizado</li>
-            <li>Analítica empresarial: reportes avanzados, exportación Excel/PDF</li>
-            <li>Capacitación y soporte: onboarding completo, soporte Teléfono/WhatsApp/Email</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-
-
       {/* Contact */}
-       <section
+      <section
         id="contact"
         className="py-20 px-8 lg:px-16 bg-[#F5F5F5] text-center"
       >
@@ -233,6 +148,47 @@ const LandingPage: React.FC = () => {
           </button>
         </form>
       </section>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg relative">
+            <button
+              onClick={closeModal}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-light"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold text-[#424242] mb-6 text-center">Contáctanos</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Nombre"
+                className="w-full border border-[#E3F2FD] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2196F3]"
+              />
+              <input
+                type="email"
+                name="correo"
+                placeholder="Correo"
+                className="w-full border border-[#E3F2FD] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2196F3]"
+              />
+              <textarea
+                name="mensaje"
+                placeholder="Mensaje"
+                className="w-full border border-[#E3F2FD] p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2196F3]"
+                rows={4}
+              ></textarea>
+              <button
+                type="submit"
+                className="bg-[#FF5722] hover:bg-[#FF8A65] text-white px-6 py-3 rounded-lg font-semibold w-full shadow-lg"
+              >
+                Enviar mensaje
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="bg-white py-8 text-center text-[#757575] text-sm border-t">
