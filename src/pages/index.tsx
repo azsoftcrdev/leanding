@@ -63,7 +63,7 @@ const LandingPage: React.FC = () => {
             Administra ventas, pedidos, inventario, facturación electrónica y mucho más desde una interfaz intuitiva y centralizada.
           </p>
           <button onClick={openModal} className="bg-[#FF5722] hover:bg-[#FF8A65] text-white font-semibold px-8 py-4 rounded-2xl shadow-lg transition-transform transform hover:scale-105">
-            Comenzá hoy
+            Contáctanos
           </button>
         </div>
         <div className="flex-1 relative flex justify-center animate-fadeInDelay">
